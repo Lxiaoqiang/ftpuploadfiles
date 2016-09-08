@@ -2,17 +2,14 @@ package com.ftp.ftpmutipuploadfile.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.GridView;
 
 import com.ftp.ftpmutipuploadfile.R;
-import com.ftp.ftpmutipuploadfile.adapter.MyAdapter;
-import com.ftp.ftpmutipuploadfile.utils.FileHelper;
-
-import java.util.Arrays;
-import java.util.List;
+import com.ftp.ftpmutipuploadfile.adapter.NineImageAdapter;
+import com.ftp.ftpmutipuploadfile.adapter.PhotoShowAdapter;
+import com.ftp.ftpmutipuploadfile.ftp.UploadTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +22,7 @@ public class MainActivity extends Activity {
     @BindView(R.id.btn_upload)
     Button upload;
 
-
+    NineImageAdapter adapter;
     @BindView(R.id.gv_show)
     GridView gv;
     @Override
@@ -34,11 +31,16 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        adapter = new NineImageAdapter(this, PhotoShowAdapter.globalImagePath);
+        gv.setAdapter(adapter);
     }
 
     @OnClick(R.id.btn_upload)
     void upload(){
-
+        for (int i = 0;i<PhotoShowAdapter.globalImagePath.size();i++){
+            UploadTask task = new UploadTask();
+            task.upload(PhotoShowAdapter.globalImagePath.get(i));
+        }
     }
     @OnClick(R.id.btn_choice)
     void selectImage(){
@@ -51,14 +53,14 @@ public class MainActivity extends Activity {
         if (resultCode == RESULT_OK){
             switch (requestCode){
                 case 1:
-                    if (data!= null) {
-                        String[] strs = data.getStringArrayExtra("mList");
-
-                        List<String> list = Arrays.asList(strs);
-                                String parentDir = data.getStringExtra("parentDir");
-                        MyAdapter adapter = new MyAdapter(MainActivity.this,list,R.layout.grid_item,parentDir);
-                        gv.setAdapter(adapter);
-                    }
+                    adapter.notifyDataSetChanged();
+//                    if (data!= null) {
+//                        String[] strs = data.getStringArrayExtra("mList");
+//
+//                        List<String> list = Arrays.asList(strs);
+//                                String parentDir = data.getStringExtra("parentDir");
+//                        MyAdapter adapter = new MyAdapter(MainActivity.this,list,R.layout.grid_item,parentDir);
+//                    }
                     break;
             }
         }
