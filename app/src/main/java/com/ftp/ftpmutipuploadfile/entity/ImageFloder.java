@@ -21,6 +21,22 @@ public class ImageFloder
 	 * 图片的数量
 	 */
 	private int count;
+	/**
+	 * 是否是图片
+	 */
+	private boolean isImage;
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isImage() {
+		return isImage;
+	}
+
+	public void setImage(boolean image) {
+		isImage = image;
+	}
 
 	public String getDir()
 	{

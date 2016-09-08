@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.ftp.ftpmutipuploadfile.R;
 import com.ftp.ftpmutipuploadfile.adapter.PhotoShowAdapter;
 import com.ftp.ftpmutipuploadfile.entity.ImageFloder;
+import com.ftp.ftpmutipuploadfile.utils.Logger;
 import com.ftp.ftpmutipuploadfile.view.FileDirSelectorPopuWindow;
 
 import android.view.ViewGroup.LayoutParams;
@@ -96,6 +98,7 @@ public class FileListActivity extends Activity{
         initEvent();
 
     }
+
 
     @OnClick(R.id.tv_complete)
     void complete() {
@@ -183,6 +186,8 @@ public class FileListActivity extends Activity{
         });
 
     }
+
+
 
     /**
      * 利用ContentProvider扫描手机中的图片，此方法在运行在子线程中 完成图片的扫描，最终获得jpg最多的那个文件夹
