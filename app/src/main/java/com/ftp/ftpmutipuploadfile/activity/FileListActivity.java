@@ -40,7 +40,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FileListActivity extends Activity{
+public class FileListActivity extends Activity {
 
     private ProgressDialog mProgressDialog;
 
@@ -53,9 +53,9 @@ public class FileListActivity extends Activity{
      */
     private File mImgDir;
     /**
-     * 所有的图片
+     * 所有的图片和视频路径
      */
-    private List<String> mImgs;
+    private List<String> mFilePath;
 
     private GridView mGirdView;
     /**
@@ -81,6 +81,7 @@ public class FileListActivity extends Activity{
     PhotoShowAdapter adapter;
 
     private FileDirSelectorPopuWindow popuWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +97,8 @@ public class FileListActivity extends Activity{
 
         getImages();
         initEvent();
+        // 初始化展示文件夹的popupWindw
+        initListDirPopupWindw();
 
     }
 
@@ -111,8 +114,6 @@ public class FileListActivity extends Activity{
             mProgressDialog.dismiss();
             // 为View绑定数据
             data2View();
-            // 初始化展示文件夹的popupWindw
-            initListDirPopupWindw();
         }
     };
 
@@ -126,11 +127,11 @@ public class FileListActivity extends Activity{
             return;
         }
 
-        mImgs = Arrays.asList(mImgDir.list());
+        mFilePath = Arrays.asList(mImgDir.list());
         /**
          * 可以看到文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
          */
-        adapter = new PhotoShowAdapter(getApplicationContext(), mImgDir.getAbsolutePath(), mImgs);
+        adapter = new PhotoShowAdapter(getApplicationContext(), mImgDir.getAbsolutePath(), mFilePath);
         mGirdView.setAdapter(adapter);
 //        mAdapter = new MyAdapter(getApplicationContext(), mImgs,
 //                R.layout.grid_item, mImgDir.getAbsolutePath());
@@ -143,39 +144,33 @@ public class FileListActivity extends Activity{
      * 初始化展示文件夹的popupWindw
      */
     private void initListDirPopupWindw() {
-        popuWindow = new FileDirSelectorPopuWindow(this,LayoutInflater.from(this).inflate(R.layout.list_dir,null),LayoutParams.MATCH_PARENT, (int) (mScreenHeight * 0.7),mImageFloders);
+        popuWindow = new FileDirSelectorPopuWindow(this, LayoutInflater.from(this).inflate(R.layout.list_dir, null), LayoutParams.MATCH_PARENT, (int) (mScreenHeight * 0.7));
         popuWindow.setOnDirSelectedListener(new FileDirSelectorPopuWindow.OnDirSelectedListener() {
             @Override
             public void selected(ImageFloder floder) {
                 mImgDir = new File(floder.getDir());
 
-                mImgs = Arrays.asList(mImgDir.list(new FilenameFilter() {
+                mFilePath = Arrays.asList(mImgDir.list(new FilenameFilter() {
                     @Override
                     public boolean accept(File dir, String filename) {
                         if (filename.endsWith(".jpg") || filename.endsWith(".png")
-                                || filename.endsWith(".jpeg")) {
+                                || filename.endsWith(".jpeg") || filename.endsWith(".mp4")) {
                             return true;
                         }
                         return false;
                     }
                 }));
 
-                adapter = new PhotoShowAdapter(getApplicationContext(),mImgDir.getAbsolutePath(),mImgs);
+                adapter = new PhotoShowAdapter(getApplicationContext(), mImgDir.getAbsolutePath(), mFilePath);
                 mGirdView.setAdapter(adapter);
-                /**
-                 * 可以看到文件夹的路径和图片的路径分开保存，极大的减少了内存的消耗；
-                 */
-//        mAdapter = new MyAdapter(getApplicationContext(), mImgs,
-//                R.layout.grid_item, mImgDir.getAbsolutePath());
-//        mGirdView.setAdapter(mAdapter);
-                // mAdapter.notifyDataSetChanged();
+
                 mImageCount.setText(floder.getCount() + "张");
                 mChooseDir.setText(floder.getName());
                 popuWindow.dismiss();
             }
         });
 
-        popuWindow .setOnDismissListener(new PopupWindow.OnDismissListener() {
+        popuWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 // 设置背景颜色变暗
@@ -187,7 +182,89 @@ public class FileListActivity extends Activity{
 
     }
 
+    public void queryAllVideo() {
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ContentResolver mContentResolver = FileListActivity.this
+                        .getContentResolver();
+                Cursor cursor = null;
+                try {
+                    //查询数据库，参数分别为（路径，要查询的列名，条件语句，条件参数，排序）
+                    cursor = mContentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+                    if (cursor != null) {
+                        while (cursor.moveToNext()) {
+                            long id = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID)); //获取唯一id
+                            String filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA)); //文件路径
+                            String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)); //文件名
+                            //...   还有很多属性可以设置
+                            //可以通过下一行查看属性名，然后在Video.Media.里寻找对应常量名
+                            Log.i("lhq", "queryAllImage --- all column name --- " + cursor.getColumnName(cursor.getPosition()));
+                            Logger.i("lhq", "path=" + filePath + ",id=" + id + ",filename=" + fileName);
+                            //获取缩略图（如果数据量大的话，会很耗时——需要考虑如何开辟子线程加载）
+
+                            // 获取图片的路径
+                            String path = cursor.getString(cursor
+                                    .getColumnIndex(MediaStore.Images.Media.DATA));
+
+                            Log.e("lhq", path);
+                            String firstImage = null;
+                            // 拿到第一张图片的路径
+                            if (firstImage == null)
+                                firstImage = path;
+                            // 获取该图片的父路径名
+                            File parentFile = new File(path).getParentFile();
+                            if (parentFile == null)
+                                continue;
+                            String dirPath = parentFile.getAbsolutePath();
+                            ImageFloder imageFloder = null;
+                            // 利用一个HashSet防止多次扫描同一个文件夹（不加这个判断，图片多起来还是相当恐怖的~~）
+                            if (mDirPaths.contains(dirPath)) {
+                                continue;
+                            } else {
+                                mDirPaths.add(dirPath);
+                                // 初始化imageFloder
+                                imageFloder = new ImageFloder();
+                                imageFloder.setDir(dirPath);
+                                imageFloder.setFirstImagePath(path);
+                                imageFloder.setImage(false);
+                            }
+                            int picSize = parentFile.list(new FilenameFilter() {
+                                @Override
+                                public boolean accept(File dir, String filename) {
+                                    if (filename.endsWith(".mp4"))
+                                        return true;
+                                    return false;
+                                }
+                            }).length;
+                            totalCount += picSize;
+
+                            imageFloder.setCount(picSize);
+                            mImageFloders.add(imageFloder);
+
+                            if (picSize > mPicsSize) {
+                                mPicsSize = picSize;
+                                mImgDir = parentFile;
+                            }
+                /*
+                 * 可以访问android.provider.MediaStore.Video.Thumbnails查询图片缩略图
+                 * Thumbnails下的getThumbnail方法可以获得图片缩略图，其中第三个参数类型还可以选择MINI_KIND
+                 */
+                            // thumbnail = MediaStore.Video.Thumbnails.getThumbnail(mContentResolver, id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
+                        }
+                        popuWindow.addList(mImageFloders);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            }
+        }).start();
+    }
 
     /**
      * 利用ContentProvider扫描手机中的图片，此方法在运行在子线程中 完成图片的扫描，最终获得jpg最多的那个文件夹
@@ -245,7 +322,7 @@ public class FileListActivity extends Activity{
                         imageFloder = new ImageFloder();
                         imageFloder.setDir(dirPath);
                         imageFloder.setFirstImagePath(path);
-
+                        imageFloder.setImage(true);
                     }
 
                     int picSize = parentFile.list(new FilenameFilter() {
@@ -269,13 +346,13 @@ public class FileListActivity extends Activity{
                     }
                 }
                 mCursor.close();
-
+//                popuWindow.addList(mImageFloders);
+                queryAllVideo();
                 // 扫描完成，辅助的HashSet也就可以释放内存了
-                mDirPaths = null;
+//                mDirPaths = null;
 
                 // 通知Handler扫描图片完成
                 mHandler.sendEmptyMessage(0x110);
-
             }
         }).start();
 
@@ -300,7 +377,7 @@ public class FileListActivity extends Activity{
         mBottomLy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popuWindow .setAnimationStyle(R.style.anim_popup_dir);
+                popuWindow.setAnimationStyle(R.style.anim_popup_dir);
                 popuWindow.showAsDropDown(mBottomLy, 0, 0);
 
                 // 设置背景颜色变暗
@@ -325,15 +402,16 @@ public class FileListActivity extends Activity{
     }
 
     private void onBack() {
-        Intent intent = new Intent();
-        if (mImgDir != null && mImgs != null && mImgs.size() > 0) {
-            intent.putExtra("parentDir", mImgDir.getAbsolutePath());
-            String[] strs = (String[]) mImgs.toArray();
-            intent.putExtra("mList", strs);
-            setResult(RESULT_OK, intent);
-            finish();
-        } else {
-            finish();
-        }
+//        Intent intent = new Intent();
+//        if (mImgDir != null && mFilePath != null && mFilePath.size() > 0) {
+//            intent.putExtra("parentDir", mImgDir.getAbsolutePath());
+//            String[] strs = (String[]) mFilePath.toArray();
+//            intent.putExtra("mList", strs);
+//            setResult(RESULT_OK, intent);
+//            finish();
+//        } else {
+        setResult(RESULT_OK);
+        finish();
+//        }
     }
 }

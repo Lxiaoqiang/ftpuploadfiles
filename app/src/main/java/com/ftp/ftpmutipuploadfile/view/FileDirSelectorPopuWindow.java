@@ -15,6 +15,7 @@ import com.ftp.ftpmutipuploadfile.R;
 import com.ftp.ftpmutipuploadfile.adapter.FileDirAdapter;
 import com.ftp.ftpmutipuploadfile.entity.ImageFloder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,9 +27,9 @@ public class FileDirSelectorPopuWindow extends PopupWindow {
 
 
     private ListView lv;
-
-
-    public FileDirSelectorPopuWindow(Context context,View view,int width,int height,List<ImageFloder> list){
+    private FileDirAdapter adapter;
+    private List<ImageFloder> mList = new ArrayList<>();
+    public FileDirSelectorPopuWindow(Context context,View view,int width,int height){
         super(view,width,height,true);
 
 //        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (mScreenHeight * 0.7));
@@ -50,7 +51,8 @@ public class FileDirSelectorPopuWindow extends PopupWindow {
             }
         });
         lv = (ListView) view.findViewById(R.id.id_list_dir);
-        lv.setAdapter(new FileDirAdapter(context,list));
+        adapter = new FileDirAdapter(context,mList);
+        lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -60,7 +62,10 @@ public class FileDirSelectorPopuWindow extends PopupWindow {
         });
     }
 
-
+    public void addList(List<ImageFloder> list){
+        mList.addAll(list);
+        adapter.notifyDataSetChanged();
+    }
 
     private OnDirSelectedListener onDirSelectedListener;
 

@@ -52,7 +52,11 @@ public class FileDirAdapter extends BaseAdapter {
         TextView path = (TextView) view.findViewById(R.id.id_dir_item_name);
         TextView count = (TextView) view.findViewById(R.id.id_dir_item_count);
         ImageFloder entity = mImageFloders.get(i);
-        Glide.with(mContext).load(entity.getFirstImagePath()).into(icon);
+        if (entity.isImage()){
+            Glide.with(mContext).load(entity.getFirstImagePath()).into(icon);
+        }else{
+            icon.setImageResource(R.mipmap.ic_movice);
+        }
         path.setText(entity.getName());
         count.setText(entity.getCount() + "");
 
