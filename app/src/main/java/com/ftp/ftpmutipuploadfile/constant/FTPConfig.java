@@ -15,6 +15,8 @@ public class FTPConfig {
     public static final String FTP_UPLOAD_FAIL = "ftp文件上传失败";
     public static final String FTP_UPLOAD_LOADING = "ftp文件正在上传";
 
+    public static final String FPT_FILE_UPLOADED ="服务器已经上传过此文件";
+
     public static final String FTP_DOWN_LOADING = "ftp文件正在下载";
     public static final String FTP_DOWN_SUCCESS = "ftp文件下载成功";
     public static final String FTP_DOWN_FAIL = "ftp文件下载失败";
