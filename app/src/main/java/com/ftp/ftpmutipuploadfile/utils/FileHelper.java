@@ -5,19 +5,15 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
-import android.widget.Toast;
 
-import com.ftp.ftpmutipuploadfile.entity.ImageFloder;
+import com.ftp.ftpmutipuploadfile.ftp.entity.ImageFloder;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Handler;
 
 /**
  * Created by lihuiqiang

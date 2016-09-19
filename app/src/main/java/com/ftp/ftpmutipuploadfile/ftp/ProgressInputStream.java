@@ -1,6 +1,6 @@
 package com.ftp.ftpmutipuploadfile.ftp;
 
-import com.ftp.ftpmutipuploadfile.constant.FTPConfig;
+import com.ftp.ftpmutipuploadfile.ftp.constant.FTPConfig;
 
 import java.io.File;
 import java.io.IOException;

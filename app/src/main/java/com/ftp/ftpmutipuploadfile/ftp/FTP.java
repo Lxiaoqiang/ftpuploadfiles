@@ -18,8 +18,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import android.util.Log;
 
 import com.ftp.ftpmutipuploadfile.activity.MainActivity;
-import com.ftp.ftpmutipuploadfile.constant.FTPConfig;
-import com.ftp.ftpmutipuploadfile.utils.CustomToast;
+import com.ftp.ftpmutipuploadfile.ftp.constant.FTPConfig;
 import com.ftp.ftpmutipuploadfile.utils.Logger;
 
 

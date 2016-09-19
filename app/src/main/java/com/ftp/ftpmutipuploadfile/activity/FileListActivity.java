@@ -3,9 +3,7 @@ package com.ftp.ftpmutipuploadfile.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -24,9 +22,9 @@ import android.widget.Toast;
 
 import com.ftp.ftpmutipuploadfile.R;
 import com.ftp.ftpmutipuploadfile.adapter.PhotoShowAdapter;
-import com.ftp.ftpmutipuploadfile.entity.ImageFloder;
+import com.ftp.ftpmutipuploadfile.ftp.entity.ImageFloder;
 import com.ftp.ftpmutipuploadfile.utils.Logger;
-import com.ftp.ftpmutipuploadfile.view.FileDirSelectorPopuWindow;
+import com.ftp.ftpmutipuploadfile.ftp.view.FileDirSelectorPopuWindow;
 
 import android.view.ViewGroup.LayoutParams;
 

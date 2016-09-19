@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @date 2016/9/8 14:04
  */
-public class PhotoShowAdapter extends BaseAdapter{
+public class PhotoShowAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<String> mList;
@@ -31,14 +31,15 @@ public class PhotoShowAdapter extends BaseAdapter{
      */
     public static final List<String> globalImagePath = new ArrayList<>();
 
-    public PhotoShowAdapter(Context context,String parentFile,List<String> list){
+    public PhotoShowAdapter(Context context, String parentFile, List<String> list) {
         mContext = context;
         mList = list;
         mParentFilePath = parentFile;
     }
+
     @Override
     public int getCount() {
-        return mList != null ? mList.size() : 0 ;
+        return mList != null ? mList.size() : 0;
     }
 
     @Override
@@ -58,19 +59,16 @@ public class PhotoShowAdapter extends BaseAdapter{
             view = LayoutInflater.from(mContext).inflate(R.layout.grid_item, null);
             holder = new ViewHolder(view);
             view.setTag(holder);
-        }else{
+        } else {
             holder = (ViewHolder) view.getTag();
         }
         final String fileName = mList.get(i);
-        Glide.with(mContext).load(mParentFilePath+"/"+fileName).into(holder.image);
+        Glide.with(mContext).load(mParentFilePath + "/" + fileName).into(holder.image);
 
-        if (globalImagePath.contains(mParentFilePath + "/"+fileName))
-        {
+        if (globalImagePath.contains(mParentFilePath + "/" + fileName)) {
             holder.select.setImageResource(R.mipmap.pictures_selected);
             holder.image.setColorFilter(Color.parseColor("#77000000"));
-        }
-        else
-        {
+        } else {
             holder.select.setImageResource(R.mipmap.picture_unselected);
             holder.image.setColorFilter(null);
         }
@@ -78,21 +76,19 @@ public class PhotoShowAdapter extends BaseAdapter{
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (globalImagePath.contains(mParentFilePath + "/"+fileName))
-                {
-                    if (globalImagePath.size()< 9) {
-                        globalImagePath.remove(mParentFilePath + "/" + fileName);
-                        holder.select.setImageResource(R.mipmap.picture_unselected);
-                        holder.image.setColorFilter(null);
-                    }else{
-                        CustomToast.showToast(mContext,"最多只能选择9张上传",2000);
+                if (globalImagePath.contains(mParentFilePath + "/" + fileName)) {
+                    globalImagePath.remove(mParentFilePath + "/" + fileName);
+                    holder.select.setImageResource(R.mipmap.picture_unselected);
+                    holder.image.setColorFilter(null);
+
+                } else {
+                    if (globalImagePath.size() < 9) {
+                        globalImagePath.add(mParentFilePath + "/" + fileName);
+                        holder.select.setImageResource(R.mipmap.pictures_selected);
+                        holder.image.setColorFilter(Color.parseColor("#77000000"));
+                    } else {
+                        CustomToast.showToast(mContext, "最多只能选择9张上传", 2000);
                     }
-                }
-                else
-                {
-                    globalImagePath.add(mParentFilePath + "/"+fileName);
-                    holder.select.setImageResource(R.mipmap.pictures_selected);
-                    holder.image.setColorFilter(Color.parseColor("#77000000"));
                 }
             }
         });
@@ -100,11 +96,12 @@ public class PhotoShowAdapter extends BaseAdapter{
         return view;
     }
 
-    class ViewHolder{
-        public ViewHolder(View view){
+    class ViewHolder {
+        public ViewHolder(View view) {
             select = (ImageButton) view.findViewById(R.id.id_item_select);
             image = (ImageView) view.findViewById(R.id.id_item_image);
         }
+
         ImageButton select;
         ImageView image;
     }

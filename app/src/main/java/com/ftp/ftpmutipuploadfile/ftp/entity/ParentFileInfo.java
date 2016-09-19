@@ -1,4 +1,4 @@
-package com.ftp.ftpmutipuploadfile.entity;
+package com.ftp.ftpmutipuploadfile.ftp.entity;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class ParentFileInfo {
 
     private String parentFilePath;
-    private List<FileInfo> list;
+    private List<FTPFileInfo> list;
 
     public String getParentFilePath() {
         return parentFilePath;
@@ -20,11 +20,11 @@ public class ParentFileInfo {
         this.parentFilePath = parentFilePath;
     }
 
-    public List<FileInfo> getList() {
+    public List<FTPFileInfo> getList() {
         return list;
     }
 
-    public void setList(List<FileInfo> list) {
+    public void setList(List<FTPFileInfo> list) {
         this.list = list;
     }
 }

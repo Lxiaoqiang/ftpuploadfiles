@@ -16,11 +16,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="上传"/>
-    <ImageView
-        android:id="@+id/iv_test"
+    <Button
+        android:id="@+id/btn_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="扫一扫"/>
+    <TextView
+        android:id="@+id/tv_result"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop"/>
+        android:layout_height="wrap_content"
+        android:textSize="17sp"/>
     <GridView
         android:id="@+id/gv_show"
         android:layout_width="match_parent"

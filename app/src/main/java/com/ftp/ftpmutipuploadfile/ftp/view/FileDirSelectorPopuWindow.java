@@ -1,19 +1,16 @@
-package com.ftp.ftpmutipuploadfile.view;
+package com.ftp.ftpmutipuploadfile.ftp.view;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
 import com.ftp.ftpmutipuploadfile.R;
 import com.ftp.ftpmutipuploadfile.adapter.FileDirAdapter;
-import com.ftp.ftpmutipuploadfile.entity.ImageFloder;
+import com.ftp.ftpmutipuploadfile.ftp.entity.ImageFloder;
 
 import java.util.ArrayList;
 import java.util.List;

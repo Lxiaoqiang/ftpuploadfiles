@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.ftp.ftpmutipuploadfile.R;
-import com.ftp.ftpmutipuploadfile.entity.ImageFloder;
+import com.ftp.ftpmutipuploadfile.ftp.entity.ImageFloder;
 
 import java.util.List;
 

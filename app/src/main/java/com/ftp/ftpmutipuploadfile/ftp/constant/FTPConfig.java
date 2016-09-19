@@ -1,4 +1,4 @@
-package com.ftp.ftpmutipuploadfile.constant;
+package com.ftp.ftpmutipuploadfile.ftp.constant;
 
 /**
  * Created by lihuiqiang

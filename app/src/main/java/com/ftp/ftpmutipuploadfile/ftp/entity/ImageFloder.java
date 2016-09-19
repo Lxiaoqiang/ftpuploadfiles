@@ -1,4 +1,4 @@
-package com.ftp.ftpmutipuploadfile.entity;
+package com.ftp.ftpmutipuploadfile.ftp.entity;
 
 public class ImageFloder
 {

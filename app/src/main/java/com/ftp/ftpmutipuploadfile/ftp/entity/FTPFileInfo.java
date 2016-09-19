@@ -1,11 +1,11 @@
-package com.ftp.ftpmutipuploadfile.entity;
+package com.ftp.ftpmutipuploadfile.ftp.entity;
 
 /**
  * Created by lihuiqiang
  *
  * @date 2016/9/8 14:24
  */
-public class FileInfo {
+public class FTPFileInfo {
     private String fileName;
     private boolean selected;
 
