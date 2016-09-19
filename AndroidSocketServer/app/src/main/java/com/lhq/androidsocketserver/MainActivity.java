@@ -1,10 +1,11 @@
 package com.lhq.androidsocketserver;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -15,6 +16,8 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.zxing.WriterException;
 import com.lhq.androidsocketserver.utils.EncodingHandler;
+
+import org.apache.http.conn.util.InetAddressUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,7 +68,9 @@ public class MainActivity extends Activity {
             file.mkdirs();
         }
 //        infoip.setText();
-        createCode(getIpAddress()+","+SocketServerPORT);
+
+        createCode(getIp()+","+SocketServerPORT);
+        info.setText(getIp()+","+SocketServerPORT);
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime()
                 .availableProcessors() * 50);
 
@@ -73,6 +78,24 @@ public class MainActivity extends Activity {
         socketServerThread.start();
     }
 
+    private String getIp(){
+        //获取wifi服务
+        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        //判断wifi是否开启
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        }
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        return intToIp(ipAddress);
+    }
+    private String intToIp(int i) {
+
+        return (i & 0xFF ) + "." +
+                ((i >> 8 ) & 0xFF) + "." +
+                ((i >> 16 ) & 0xFF) + "." +
+                ( i >> 24 & 0xFF) ;
+    }
     private class SocketServerThread extends Thread {
 
         int count = 0;
@@ -83,14 +106,14 @@ public class MainActivity extends Activity {
             try {
                 final ServerSocket serverSocket;
                 serverSocket = new ServerSocket(SocketServerPORT);
-                MainActivity.this.runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        info.setText("I'm waiting here: "
-                                + serverSocket.getLocalPort());
-                    }
-                });
+//                MainActivity.this.runOnUiThread(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//                        info.setText("I'm waiting here: "
+//                                + serverSocket.getLocalPort());
+//                    }
+//                });
 
 
                 while (true) {
@@ -226,6 +249,40 @@ public class MainActivity extends Activity {
     public void delete(long sourceid) {
         if (datas.containsKey(sourceid))
             datas.remove(sourceid);
+    }
+    public String getLocalHostIp()
+    {
+        String ipaddress = "";
+        try
+        {
+            Enumeration<NetworkInterface> en = NetworkInterface
+                    .getNetworkInterfaces();
+            // 遍历所用的网络接口
+            while (en.hasMoreElements())
+            {
+                NetworkInterface nif = en.nextElement();// 得到每一个网络接口绑定的所有ip
+                Enumeration<InetAddress> inet = nif.getInetAddresses();
+                // 遍历每一个接口绑定的所有ip
+                while (inet.hasMoreElements())
+                {
+                    InetAddress ip = inet.nextElement();
+                    if (!ip.isLoopbackAddress()
+                            && InetAddressUtils.isIPv4Address(ip
+                            .getHostAddress()))
+                    {
+                        return ipaddress = "本机的ip是" + "：" + ip.getHostAddress();
+                    }
+                }
+
+            }
+        }
+        catch (SocketException e)
+        {
+            Log.e("feige", "获取本地ip地址失败");
+            e.printStackTrace();
+        }
+        return ipaddress;
+
     }
 
     private String getIpAddress() {
